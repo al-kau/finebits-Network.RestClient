@@ -1,9 +1,49 @@
+<!--
+   Copyright 2023 Finebits (https://finebits.com)
+
+   Licensed under the Apache License, Version 2.0 (the "License");
+   you may not use this file except in compliance with the License.
+   You may obtain a copy of the License at
+
+       http://www.apache.org/licenses/LICENSE-2.0
+
+   Unless required by applicable law or agreed to in writing, software
+   distributed under the License is distributed on an "AS IS" BASIS,
+   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+   See the License for the specific language governing permissions and
+   limitations under the License.
+-->
+
 <Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <TargetFramework>netstandard2.0</TargetFramework>
+    <AssemblyName>Finebits.Network.RestClient</AssemblyName>
     <RootNamespace>Finebits.Network.RestClient</RootNamespace>
     <AnalysisLevel>6.0-all</AnalysisLevel>
+
+    <PackageId>Finebits.Network.RestClient</PackageId>
+    <Title>Finebits.Network.RestClient</Title>
+
+    <Authors>Finebits</Authors>
+    <Company>Finebits</Company>
+
+    <Product>RestClient (netstandard2.0)</Product>
+    <Description>The .netstandard2.0 library for interaction with REST APIs.</Description>
+    <Copyright>© 2023 Finibits. All rights reserved.</Copyright>
+
+    <PackageProjectUrl>https://github.com/finebits/Network.RestClient</PackageProjectUrl>
+    <PackageIcon>icon.png</PackageIcon>
+    <PackageReadmeFile>README.md</PackageReadmeFile>
+
+    <PackageTags>rest;http;client;api;json;</PackageTags>
+
+    <PackageLicenseExpression>Apache-2.0</PackageLicenseExpression>
+
+    <PublishRepositoryUrl>true</PublishRepositoryUrl>
+    <EmbedUntrackedSources>true</EmbedUntrackedSources>
+    <IncludeSymbols>true</IncludeSymbols>
+    <SymbolPackageFormat>snupkg</SymbolPackageFormat>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
@@ -17,7 +57,14 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <None Include="..\..\LICENSE" Pack="true" PackagePath="\" />
+    <None Include="..\..\README.md" Pack="true" PackagePath="\" />
+    <None Include="..\..\images\icon.png" Pack="true" PackagePath="\" />
+  </ItemGroup>
+
+  <ItemGroup>
     <PackageReference Include="System.Net.Http.Json" Version="7.0.1" />
+    <PackageReference Include="Microsoft.SourceLink.GitHub" Version="1.1.1" PrivateAssets="All" />
   </ItemGroup>
 
 </Project>

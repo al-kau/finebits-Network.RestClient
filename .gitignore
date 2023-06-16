@@ -1,3 +1,5 @@
+certificates/
+nupkgs/
 source/.vs/
 source/Network.RestClient/bin/
 source/Network.RestClient/obj/
