@@ -48,13 +48,13 @@ jobs:
       uses: actions/setup-dotnet@v3
       with:
         dotnet-version: 7.0.x
-        
+
     - name: Build the project
       run: dotnet build ${{ env.nuget-project }} --configuration ${{ env.configuration }}
-        
+
     - name: Test the project
       run: dotnet test ${{ env.test-project }} --configuration ${{ env.configuration }}
-    
+
   pack-nuget:
     runs-on: ubuntu-latest
     needs: [test-nuget]
@@ -76,7 +76,7 @@ jobs:
     - name: Get version number
       id: version
       uses: finebits/github-actions/version-number@v1
-      
+
     - name: Save nuget parameters
       id: nuget 
       run: |
@@ -86,7 +86,7 @@ jobs:
       env:
         file-version: ${{ steps.version.outputs.suffix-version }}
         package-version: ${{ steps.version.outputs.semantic-hash-version }}
-        
+
     - name: Build nuget
       run: dotnet build ${{ env.nuget-project }} --configuration ${{ env.configuration }} --property:Version=${{ env.file-version }} --property:ContinuousIntegrationBuild=true
       env:
@@ -116,9 +116,9 @@ jobs:
         name: ${{ env.artifact-name }}
         path: |
           ${{ env.package-root }}
-      env: 
+      env:
         artifact-name: ${{ steps.nuget.outputs.artifact-full-name }}
-        
+
     - name: Push package to nuget.org
       if: ${{ github.event_name == 'release' && env.nuget-apikey != '' && env.certificate != '' }}
-      run: dotnet nuget push "${{ env.package-root }}/*.nupkg" --api-key "${{ env.nuget-apikey }}" --source https://api.nuget.org/v3/index.json --skip-duplicate        
+      run: dotnet nuget push "${{ env.package-root }}/*.nupkg" --api-key "${{ env.nuget-apikey }}" --source https://api.nuget.org/v3/index.json --skip-duplicate
