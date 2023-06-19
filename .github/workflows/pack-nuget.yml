@@ -1,3 +1,21 @@
+################################################################################
+#                                                                              #
+#   Copyright 2023 Finebits (https://finebits.com)                             #
+#                                                                              #
+#   Licensed under the Apache License, Version 2.0 (the "License");            #
+#   you may not use this file except in compliance with the License.           #
+#   You may obtain a copy of the License at                                    #
+#                                                                              #
+#       http://www.apache.org/licenses/LICENSE-2.0                             #
+#                                                                              #
+#   Unless required by applicable law or agreed to in writing, software        #
+#   distributed under the License is distributed on an "AS IS" BASIS,          #
+#   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.   #
+#   See the License for the specific language governing permissions and        #
+#   limitations under the License.                                             #
+#                                                                              #
+################################################################################
+
 name: Pack Nuget
 
 on:
@@ -9,10 +27,12 @@ env:
   package-root: "${{ github.workspace }}/nupkgs"
   certificate-root: "${{ github.workspace }}/certificates"
   certificate: ${{ secrets.NUGET_SIGNING_CERT_BASE64 }}
+  certificate-password: ${{ secrets.NUGET_SIGNING_CERT_PASSWORD }}
   nuget-project: ./source/Network.RestClient/Network.RestClient.csproj 
   test-project: ./source/Test/Test.csproj
   configuration: Release
   artifact-name: Finebits.Network.RestClient
+  nuget-apikey: ${{ secrets.NUGET_APIKEY }}
 
 jobs:
   test-nuget:
@@ -33,7 +53,7 @@ jobs:
       run: dotnet build ${{ env.nuget-project }} --configuration ${{ env.configuration }}
         
     - name: Test the project
-      run: dotnet test ${{ env:test-project }} --configuration ${{ env.configuration }}
+      run: dotnet test ${{ env.test-project }} --configuration ${{ env.configuration }}
     
   pack-nuget:
     runs-on: ubuntu-latest
@@ -82,7 +102,7 @@ jobs:
       run: |
         mkdir -p ${{ env.certificate-root }}
         echo "${{ env.certificate }}" | base64 --decode > "${{ env.certificate-file }}"
-        dotnet nuget sign "${{ env.package-root }}/*.nupkg" --certificate-path="${{ env.certificate-file }}" --certificate-password="${{ secrets.NUGET_SIGNING_CERT_PASSWORD }}" --timestamper "http://timestamp.digicert.com"
+        dotnet nuget sign "${{ env.package-root }}/*.nupkg" --certificate-path="${{ env.certificate-file }}" --certificate-password="${{ env.certificate-password }}" --timestamper "http://timestamp.digicert.com"
       env:
         certificate-file: "${{ env.certificate-root }}/certificate.pfx"
 
@@ -100,5 +120,5 @@ jobs:
         artifact-name: ${{ steps.nuget.outputs.artifact-full-name }}
         
     - name: Push package to nuget.org
-      if: ${{ github.event_name == 'release' && secrets.NUGET_APIKEY != '' && env.certificate != '' }}
-      run: dotnet nuget push "${{ env.package-root }}/*.nupkg" --api-key "${{ secrets.NUGET_APIKEY }}" --source https://api.nuget.org/v3/index.json --skip-duplicate        
+      if: ${{ github.event_name == 'release' && env.nuget-apikey != '' && env.certificate != '' }}
+      run: dotnet nuget push "${{ env.package-root }}/*.nupkg" --api-key "${{ env.nuget-apikey }}" --source https://api.nuget.org/v3/index.json --skip-duplicate        
